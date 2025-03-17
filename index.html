@@ -9,11 +9,18 @@
             text-align: center;
             background-color: black;
             color: white;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            border: 2px solid white;
+            display: block;
+            margin: auto;
         }
     </style>
 </head>
 <body>
     <h1>Space Shooter Game</h1>
-    <script src="game.js"></script> <!-- Link to your JavaScript file -->
+    <canvas id="gameCanvas" width="800" height="500"></canvas>
+    <script src="game.js"></script> <!-- Link to game logic -->
 </body>
 </html>
