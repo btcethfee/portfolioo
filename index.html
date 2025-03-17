@@ -1,67 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="author" content="Dennis Hansen">
-    <meta name="description" content="Official GitHub repository for fraud investigation in collaboration with CoinMarketCap.">
-    <title>Fraud Investigation Unit | CoinMarketCap</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .container {
-            width: 80%;
-            margin: auto;
-            padding: 20px;
-            background: white;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        h1, h2 {
-            color: #333;
-        }
-        .header {
-            background: #002244;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-        }
-        .footer {
-            text-align: center;
-            padding: 10px;
-            margin-top: 20px;
-            background: #002244;
-            color: white;
-            font-size: 14px;
-        }
-        .references {
-            margin-top: 20px;
-            padding: 10px;
-            background: #eaeaea;
-            border-left: 5px solid #002244;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">Fraud Investigation Unit - CoinMarketCap</div>
-    <div class="container">
-        <h1>Welcome to the Official Repository</h1>
-        <p>This repository is managed by Dennis Hansen in collaboration with CoinMarketCap's Fraud Investigation Department.</p>
-        <h2>About</h2>
-        <p>Our goal is to identify and prevent fraudulent activities related to cryptocurrency transactions, wallet security, and exchange monitoring.</p>
-        <h2>References</h2>
-        <div class="references">
-            <p>- CoinMarketCap Official Website: <a href="https://coinmarketcap.com">coinmarketcap.com</a></p>
-            <p>- Blockchain Analysis Reports: <a href="#">(Internal Documents)</a></p>
-            <p>- Financial Crime Reports: <a href="#">(Restricted Access)</a></p>
-        </div>
-    </div>
-    <div class="footer">© 2025 CoinMarketCap Fraud Investigation Unit | All Rights Reserved</div>
-</body>
-</html>
+const canvas = document.createElement("canvas");
+const ctx = canvas.getContext("2d");
+document.body.appendChild(canvas);
+canvas.width = 800;
+canvas.height = 600;
+
+// Load spaceship image
+const spaceship = new Image();
+spaceship.src = "https://upload.wikimedia.org/wikipedia/commons/3/3f/Space_shuttle.png";
+
+// Player object
+const player = {
+    x: canvas.width / 2 - 25,
+    y: canvas.height - 80,
+    width: 50,
+    height: 50,
+    speed: 5,
+    bullets: []
+};
+
+// Asteroids array
+const asteroids = [];
+
+// Controls
+const keys = {};
+document.addEventListener("keydown", (e) => keys[e.key] = true);
+document.addEventListener("keyup", (e) => keys[e.key] = false);
+
+document.addEventListener("keydown", (e) => {
+    if (e.key === " ") {
+        player.bullets.push({ x: player.x + 20, y: player.y, width: 10, height: 20 });
+    }
+});
+
+// Game loop
+function update() {
+    if (keys["ArrowLeft"] && player.x > 0) player.x -= player.speed;
+    if (keys["ArrowRight"] && player.x < canvas.width - player.width) player.x += player.speed;
+    
+    player.bullets.forEach((bullet, index) => {
+        bullet.y -= 7;
+        if (bullet.y < 0) player.bullets.splice(index, 1);
+    });
+    
+    if (Math.random() < 0.02) {
+        asteroids.push({ x: Math.random() * (canvas.width - 40), y: 0, width: 40, height: 40 });
+    }
+    
+    asteroids.forEach((asteroid, index) => {
+        asteroid.y += 3;
+        if (asteroid.y > canvas.height) asteroids.splice(index, 1);
+    });
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(spaceship, player.x, player.y, player.width, player.height);
+    
+    ctx.fillStyle = "red";
+    player.bullets.forEach(bullet => ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height));
+    
+    ctx.fillStyle = "gray";
+    asteroids.forEach(asteroid => ctx.fillRect(asteroid.x, asteroid.y, asteroid.width, asteroid.height));
+}
+
+function gameLoop() {
+    update();
+    draw();
+    requestAnimationFrame(gameLoop);
+}
+
+spaceship.onload = () => gameLoop();
